@@ -269,9 +269,9 @@ jobs:
             npm/octobus-darwin-arm64 \
             npm/octobus-win32-x64 \
             npm/octobus-win32-arm64; do
-            npm publish "$package_dir" "${publish_args[@]}"
+            npm publish "./$package_dir" "${publish_args[@]}"
           done
-          npm publish npm/octobus "${publish_args[@]}"
+          npm publish ./npm/octobus "${publish_args[@]}"
 
       - name: Publish stable OctoBus packages
         if: steps.release.outputs.dist_tag == 'latest'
@@ -286,6 +286,6 @@ jobs:
             npm/octobus-darwin-arm64 \
             npm/octobus-win32-x64 \
             npm/octobus-win32-arm64; do
-            npm publish "$package_dir" "${publish_args[@]}"
+            npm publish "./$package_dir" "${publish_args[@]}"
           done
-          npm publish npm/octobus "${publish_args[@]}"
+          npm publish ./npm/octobus "${publish_args[@]}"
