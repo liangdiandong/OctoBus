@@ -189,15 +189,15 @@
   - 验收标准：`--recursive --name`、缺 source、多 source 报错清晰；非 recursive `SERVICE SOURCE` 保持兼容。
   - 完成总结：CLI 已支持 `octobus service import --recursive SOURCE`，recursive 模式只接受一个 `SOURCE`，禁止 `--name`，请求体发送 `recursive:true`、`source`、`offline`、`reinstall`、`build`，且不发送 `service_id`/`name`；非 recursive `SERVICE SOURCE` 保持兼容。补充 help usage 展示 recursive 形态，并在 `service import --help` 中审计不出现 `--all` alias；既有 help 测试继续禁止 `--id` 资源定位 flag。验证命令：`go test ./internal/cli`，结果通过。
 
-- [ ] 5.2 更新 services import-check 脚本
+- [x] 5.2 更新 services import-check 脚本
   - 依赖：5.1。
   - 工作内容：将 `services/scripts/import-check-all.mjs` 改为执行一次 `octobus service import --recursive <root>`，再用 `service list` 校验 `discoverServices(root)` 中每个 service 的 `ID`、`ServiceRoot`、`NodeEntry`。
   - 可并行子任务：
-    - [ ] 可并行：脚本主流程更新。
-    - [ ] 可并行：`services/tests/validate-service-package.test.mjs` 参数校验和 discoverServices 断言更新。
+    - [x] 可并行：脚本主流程更新。
+    - [x] 可并行：`services/tests/validate-service-package.test.mjs` 参数校验和 discoverServices 断言更新。
   - 测试方案：`node --test services/tests/validate-service-package.test.mjs`。
   - 验收标准：脚本不再调用旧 `service import --id ...` 形态；Node 测试通过。
-  - 完成总结：待完成。
+  - 完成总结：已将 `services/scripts/import-check-all.mjs` 改为递归发现 service roots，跳过 `node_modules`、`.git` 和隐藏目录；主流程启动 daemon 后执行一次 `octobus service import --recursive <root>`，再通过 `octobus service list` 校验每个发现 service 的 `ID`、`ServiceRoot`、`NodeEntry`。Node 测试保留参数校验和 discoverServices 断言，并新增静态断言确认脚本使用 `--recursive` 且不再使用旧 `service import --id` 形态。验证命令：`node --test services/tests/validate-service-package.test.mjs`，结果通过。
 
 - [ ] 5.3 聚焦验证 CLI + admin + importer 串联
   - 依赖：5.1、5.2。
